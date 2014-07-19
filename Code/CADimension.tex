@@ -1,0 +1,99 @@
+\usepackage{tikz}
+\usepackage{xparse}
+\usetikzlibrary{calc}
+
+\tikzset{%
+    Cote node/.style={%
+        %sloped,    % This option ratate the text to the line (horizontal, vertical)
+        fill=white,
+        font=\footnotesize, 
+        inner sep=1pt, 
+        outer sep=1.5pt,
+        text=blue
+    },
+    Cote arrow/.style={%
+        <->,
+        >=latex,
+        very thin,
+        blue
+    },
+    Cote radius/.style={%
+        ->,
+        >=latex,
+        very thin,
+        blue
+    },
+    Cote limite/.style={%
+        >=latex,
+        very thin,
+        blue
+    }
+}
+
+\makeatletter
+\NewDocumentCommand{\Cote}{%
+    s       % cotation avec les flèches à l'extérieur
+    D<>{1.5pt} % offset des traits
+    O{.75cm}    % offset de cotation
+    m       % premier point
+    m       % second point
+    m       % étiquette
+    D<>{o}  % () coordonnées -> angle
+            % h -> horizontal,
+            % v -> vertical
+            % r -> radius
+            % o or what ever -> oblique
+    O{}     % parametre du tikzset
+    }{%
+
+    {\tikzset{#8}
+
+    \coordinate (@1) at #4 ;
+    \coordinate (@2) at #5 ;
+
+    \if #7v % Cotation verticale
+        \coordinate (@0) at ($($#4!.5!#5$) + (#3,0)$) ; 
+        \coordinate (@4) at (@0|-@1) ;
+        \coordinate (@5) at (@0|-@2) ;
+    \else
+    \if #7h % Cotation horizontale
+        \coordinate (@0) at ($($#4!.5!#5$) + (0,#3)$) ; 
+        \coordinate (@4) at (@0-|@1) ;
+        \coordinate (@5) at (@0-|@2) ;
+    \else 
+    \if #7r % Radius
+        \coordinate (@4) at (@1) ;
+        \coordinate (@5) at (@2) ;
+    \else % cotation encoche
+    \ifnum\pdfstrcmp{\unexpanded\expandafter{\@car#7\@nil}}{(}=\z@
+        \coordinate (@5) at ($#7!#3!#5$) ;
+        \coordinate (@4) at ($#7!#3!#4$) ;
+    \else % cotation oblique    
+        \coordinate (@5) at ($#5!#3!90:#4$) ;
+        \coordinate (@4) at ($#4!#3!-90:#5$) ;
+    \fi\fi\fi\fi
+
+      \if #7r
+      \else
+        \draw[Cote limite, shorten >= #2, shorten <= -2*#2] (@4) -- #4 ;
+        \draw[Cote limite, shorten >= #2, shorten <= -2*#2] (@5) -- #5 ;
+      \fi
+
+    \IfBooleanTF #1 {% Con asterisco
+      \draw[Cote arrow,-] (@4) -- (@5) node[Cote node] at ($ 0.5*(@4) + 0.5*(@5) $) {#6\strut};
+      \draw[Cote arrow,<-] (@4) -- ($(@4)!-6pt!(@5)$) ;   
+      \draw[Cote arrow,<-] (@5) -- ($(@5)!-6pt!(@4)$) ;   
+    }{ %Sin asterisco
+    \ifnum\pdfstrcmp{\unexpanded\expandafter{\@car#7\@nil}}{(}=\z@
+      \draw[Cote arrow] (@5) to[bend right] node[Cote node] {#6\strut} (@4) ;
+    \else
+      \if #7r
+        \draw[Cote radius] (@4) -- (@5) node[Cote node] at ($ 0.5*(@4) + 0.5*(@5) $) {#6\strut};
+      \else
+        \draw[Cote arrow] (@4) -- (@5) node[Cote node] at ($ 0.5*(@4) + 0.5*(@5) $) {#6\strut};
+      \fi
+    \fi
+    }}
+    }
+\makeatother
+
