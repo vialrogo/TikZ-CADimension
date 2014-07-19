@@ -3,7 +3,7 @@ TikZ-CADimension
 
 It's a very simple TikZ library that provide a easy way for dimensioning a image.
 
-## Taras Cote
+## Tarass Cote
 The original idea of this project is based on StackOverflow answer. This is the [post](http://tex.stackexchange.com/questions/14901/dimensioning-of-a-technical-drawing-in-tikz).
 
 ## Objective
