@@ -13,4 +13,5 @@ The principal objective of this project is reproduce and extend the Taras Cote c
 - Migrate all code.
 - In-code documentation.
 - Make applications examples for all options. 
+- Radius dimmension has to paint the center dot!
 
