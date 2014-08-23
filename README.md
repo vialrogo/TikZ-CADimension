@@ -13,5 +13,8 @@ The principal objective of this project is reproduce and extend the Taras Cote c
 - Migrate all code.
 - In-code documentation.
 - Make applications examples for all options. 
-- Radius dimmension has to paint the center dot!
+
+## Possible features
+- Radius dimension has to paint the center dot!
+- Radius dimension recive the center, the radius and the angle, and calculate the dimmension line final point (using sin and cos) automatically.
 
