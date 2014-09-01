@@ -2,84 +2,100 @@
 \usepackage{xparse}
 \usetikzlibrary{calc,arrows.meta}
 
-\tikzset{%
-    Cote/.style={%
+% Default styles definition
+\tikzset{% 
+    prim-Dim/.style={%
       >={Latex[length=3mm, width=1.5mm]}, % Arrow head proprieties
       very thin,                          % Line style
       font=\footnotesize,                 % Dimension line text size
     },
-    Cote node/.style={Cote,
-      fill=white,
-      inner sep=0pt, 
-      outer sep=0pt,
+    prim-DimNode/.style={prim-Dim,
+      fill=white,                         % Fill with color background, by default white
+      inner sep=0pt,                      % Space to the line 
+      outer sep=0pt,                      % Space to the line 
     },
+    Dimension/.style={},                  % Empty style for user use
+    DimNode/.style={},                    % Empty style for user use
 }
 
 \makeatletter
 \NewDocumentCommand{\Cote}{%
-    s           % Is the star. With star the arrow is external.
-    D<>{1pt}    % Offset of limit lines (deprecated!)
-    O{7mm}    % offset de cotation
-    m           % premier point
-    m           % second point
-    m           % étiquette
-    D<>{o}      % () coordonnées -> angle
-                % h -> horizontal,
-                % v -> vertical
-                % r -> radius
-                % o or what ever -> oblique
-    O{}         % parametre du tikzset
-    }{%
+%-------------------------------------------------------------------------------------------%
+%                                 Input Parameters                                          %
+%-------------------------------------------------------------------------------------------%
+% Type? | brackets | Default |                  Mean
+    s                        % Is the star. With star the arrow is external.
+    D       <>        {1pt}  % Offset of limit lines (deprecated!)
+    O                 {7mm}  % Offset of dimension line
+    m                        % First point
+    m                        % Second point
+    m                        % Label
+    D       <>         {o}   % h: Horizontal, v: Vertical, r: Radius, a: Angle, o: Oblique
+    O                  {}    % Parameters for include in tikzset
+%-------------------------------------------------------------------------------------------%
+}{%
 
-    {\tikzset{#8}
+{%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Start the body of Command  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  
+  % User defined styles
+  \tikzset{#8}
 
-    \coordinate (@1) at #4 ;
-    \coordinate (@2) at #5 ;
+  % Total styles
+  \tikzset{%
+    Dim/.style  ={prim-Dim,Dimension},
+    Node/.style ={prim-DimNode,DimNode},
+  }
 
-    \if #7v % Cotation verticale
-        \coordinate (@0) at ($($#4!.5!#5$) + (#3,0)$) ; 
-        \coordinate (@4) at (@0|-@1) ;
-        \coordinate (@5) at (@0|-@2) ;
+  % Coordinates calculation
+  \coordinate (@1) at #4 ;
+  \coordinate (@2) at #5 ;
+
+  \if #7v % Vertical dimension
+      \coordinate (@0) at ($($#4!.5!#5$) + (#3,0)$) ; 
+      \coordinate (@4) at (@0|-@1) ;
+      \coordinate (@5) at (@0|-@2) ;
+  \else
+  \if #7h % Horizontal dimension
+      \coordinate (@0) at ($($#4!.5!#5$) + (0,#3)$) ; 
+      \coordinate (@4) at (@0-|@1) ;
+      \coordinate (@5) at (@0-|@2) ;
+  \else 
+  \if #7r % Radial dimension
+      \coordinate (@4) at (@1) ;
+      \coordinate (@5) at (@2) ;
+  \else % cotation encoche
+  \ifnum\pdfstrcmp{\unexpanded\expandafter{\@car#7\@nil}}{(}=\z@
+  % \if #7a % Angular dimension
+      \coordinate (@5) at ($#7!#3!#5$) ;
+      \coordinate (@4) at ($#7!#3!#4$) ;
+  \else % cotation oblique    
+      \coordinate (@5) at ($#5!#3!90:#4$) ;
+      \coordinate (@4) at ($#4!#3!-90:#5$) ;
+  \fi\fi\fi\fi
+
+  % Put the limit lines, only if isn't radius
+  \if #7r
+    % Center circle and center lines?
+  \else
+    \draw[Dim, shorten >= 1mm, shorten <= -3mm] (@4) -- #4 ;
+    \draw[Dim, shorten >= 1mm, shorten <= -3mm] (@5) -- #5 ;
+  \fi
+
+  \IfBooleanTF #1 {% Con asterisco
+    \draw[Dim,-] (@4) -- (@5) node[Node] at ($ 0.5*(@4) + 0.5*(@5) $) {#6\strut};
+    \draw[Dim,<-] (@4) -- ($(@4)!-6pt!(@5)$) ;   
+    \draw[Dim,<-] (@5) -- ($(@5)!-6pt!(@4)$) ;   
+  }{%Sin asterisco
+  \ifnum\pdfstrcmp{\unexpanded\expandafter{\@car#7\@nil}}{(}=\z@
+    \draw[Dim, <-> ] (@5) to[bend right] node[Node] {#6\strut} (@4) ;
+  \else
+    \if #7r
+      \draw[Dim, ->] (@4) -- (@5) node[Node] at ($ 0.5*(@4) + 0.5*(@5) $) {#6\strut};
     \else
-    \if #7h % Cotation horizontale
-        \coordinate (@0) at ($($#4!.5!#5$) + (0,#3)$) ; 
-        \coordinate (@4) at (@0-|@1) ;
-        \coordinate (@5) at (@0-|@2) ;
-    \else 
-    \if #7r % Radius
-        \coordinate (@4) at (@1) ;
-        \coordinate (@5) at (@2) ;
-    \else % cotation encoche
-    \ifnum\pdfstrcmp{\unexpanded\expandafter{\@car#7\@nil}}{(}=\z@
-        \coordinate (@5) at ($#7!#3!#5$) ;
-        \coordinate (@4) at ($#7!#3!#4$) ;
-    \else % cotation oblique    
-        \coordinate (@5) at ($#5!#3!90:#4$) ;
-        \coordinate (@4) at ($#4!#3!-90:#5$) ;
-    \fi\fi\fi\fi
-
-      % Put the limit lines, only if isn't radius
-      \if #7r
-      \else
-        \draw[Cote, shorten >= 1mm, shorten <= -3mm] (@4) -- #4 ;
-        \draw[Cote, shorten >= 1mm, shorten <= -3mm] (@5) -- #5 ;
-      \fi
-
-    \IfBooleanTF #1 {% Con asterisco
-      \draw[Cote,-] (@4) -- (@5) node[Cote node] at ($ 0.5*(@4) + 0.5*(@5) $) {#6\strut};
-      \draw[Cote,<-] (@4) -- ($(@4)!-6pt!(@5)$) ;   
-      \draw[Cote,<-] (@5) -- ($(@5)!-6pt!(@4)$) ;   
-    }{%Sin asterisco
-    \ifnum\pdfstrcmp{\unexpanded\expandafter{\@car#7\@nil}}{(}=\z@
-      \draw[Cote, <-> ] (@5) to[bend right] node[Cote node] {#6\strut} (@4) ;
-    \else
-      \if #7r
-        \draw[Cote, ->] (@4) -- (@5) node[Cote node] at ($ 0.5*(@4) + 0.5*(@5) $) {#6\strut};
-      \else
-        \draw[Cote, <->] (@4) -- (@5) node[Cote node] at ($ 0.5*(@4) + 0.5*(@5) $) {#6\strut};
-      \fi
+      \draw[Dim, <->] (@4) -- (@5) node[Node] at ($ 0.5*(@4) + 0.5*(@5) $) {#6\strut};
     \fi
-    }}
-    }
+  \fi
+  }}
+}
 \makeatother
 

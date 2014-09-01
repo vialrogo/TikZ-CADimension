@@ -1,22 +1,17 @@
-%% Taken from Tarass answer on http://tex.stackexchange.com/questions/14901/dimensioning-of-a-technical-drawing-in-tikz
-
 \documentclass[tikz,margin=5pt,12pt]{standalone}
 \input{../../Code/CADimension}
 \begin{document}
 \begin{tikzpicture}[scale=2.5]
-\small
 
-% Base figure
+%--------------------  Base figure  ------------------------------
 \def\ColorBg{blue!40!white}
 \def\ColorCote{red!80!black}
-\def\Ra{1.5}
-\def\Rb{0.6}
 
-\coordinate (c) ato (1.5,3.5);
+\coordinate (C) at (1.5,3.5);
 
 \draw[thick, fill=\ColorBg, \ColorBg]
-        ($(c) + (-72:\Ra)$) coordinate (p1)
-    arc (-72:90:\Ra)      coordinate (p2)
+        ($(C) + (-72:1.5)$) coordinate (p1)
+    arc (-72:90:1.5)      coordinate (p2)
     --  (0.1,5)           coordinate (p3)
     --  (0.1,0)           coordinate (p4)
     --  (1,0)             coordinate (p5)
@@ -26,20 +21,27 @@
     --  cycle;
 
 \draw[thick, \ColorBg, fill=white]
-        ($(c) + (-90:\Rb)$) coordinate (p9)
-    arc (-90:90:\Rb)      coordinate (p10)
+        ($(C) + (-90:0.6)$) coordinate (p9)
+    arc (-90:90:0.6)      coordinate (p10)
     --  (1,4.1)           coordinate (p11)
     --  (1,2.9)           coordinate (p12)
     --  cycle;
 
-% Dimension lines
-\begin{scope}[Cote/.append style={\ColorCote, text=\ColorCote}]
+%--------------------  Dimension lines  --------------------------
+\begin{scope}[Dimension/.style={\ColorCote, text=\ColorCote}]
+
   \Cote{(p3)}{(p4)}{50mm}
-  \Cote[-5mm]{(p6)}{(p7)}{25mm}[Cote node/.append style={fill=\ColorBg}]
+
+  \Cote[-5mm]{(p6)}{(p7)}{25mm}[DimNode/.style={fill=\ColorBg}]
+
   \Cote<3mm>[10mm]{(p1)}{(p8)}{20mm}<v>
+
   \Cote[25mm]{(p7)}{(p5)}{$22.5^\circ$}<(p6)>
-  \Cote*[4mm]{(p11)} {(p12)} {14mm}[Cote node/.append style={fill=\ColorBg}]
-  \Cote{(c)} {($(c) + (45:1.5)$)} {15mm}<r>[Cote node/.append style={fill=\ColorBg}]
+
+  \Cote*[4mm]{(p11)} {(p12)} {14mm}[DimNode/.style={fill=\ColorBg}]
+
+  \Cote{(C)} {($(C) + (45:1.5)$)} {15mm}<r>[DimNode/.style={fill=\ColorBg}]
+
 \end{scope}
 
 \end{tikzpicture}
