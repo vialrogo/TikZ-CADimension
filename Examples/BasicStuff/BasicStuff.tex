@@ -1,9 +1,9 @@
 %% Taken from Tarass answer on http://tex.stackexchange.com/questions/14901/dimensioning-of-a-technical-drawing-in-tikz
 
-\documentclass[tikz,margin=5pt]{standalone}
+\documentclass[tikz,margin=5pt,12pt]{standalone}
 \input{../../Code/CADimension}
 \begin{document}
-\begin{tikzpicture}
+\begin{tikzpicture}[scale=2.5]
 \small
 
 % Base figure
@@ -16,7 +16,7 @@
 
 \draw[thick, fill=\ColorBg, \ColorBg]
         ($(c) + (-72:\Ra)$) coordinate (p1)
-    arc (-72:90:\Ra)     coordinate (p2)
+    arc (-72:90:\Ra)      coordinate (p2)
     --  (0.1,5)           coordinate (p3)
     --  (0.1,0)           coordinate (p4)
     --  (1,0)             coordinate (p5)
@@ -36,7 +36,7 @@
 \begin{scope}[Cote/.append style={\ColorCote, text=\ColorCote}]
   \Cote{(p3)}{(p4)}{50mm}
   \Cote[-5mm]{(p6)}{(p7)}{25mm}[Cote node/.append style={fill=\ColorBg}]
-  \Cote[10mm]{(p1)}{(p8)}{20mm}<v>
+  \Cote<3mm>[10mm]{(p1)}{(p8)}{20mm}<v>
   \Cote[25mm]{(p7)}{(p5)}{$22.5^\circ$}<(p6)>
   \Cote*[4mm]{(p11)} {(p12)} {14mm}[Cote node/.append style={fill=\ColorBg}]
   \Cote{(c)} {($(c) + (45:1.5)$)} {15mm}<r>[Cote node/.append style={fill=\ColorBg}]

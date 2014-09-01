@@ -1,12 +1,12 @@
 \usepackage{tikz}
 \usepackage{xparse}
-\usetikzlibrary{calc}
+\usetikzlibrary{calc,arrows.meta}
 
 \tikzset{%
     Cote/.style={%
-      >=latex,
-      very thin,
-      font=\tiny, 
+      >={Latex[length=3mm, width=1.5mm]}, % Arrow head proprieties
+      very thin,                          % Line style
+      font=\footnotesize,                 % Dimension line text size
     },
     Cote node/.style={Cote,
       fill=white,
@@ -17,18 +17,18 @@
 
 \makeatletter
 \NewDocumentCommand{\Cote}{%
-    s       % cotation avec les flèches à l'extérieur
-    D<>{1.5pt} % offset des traits
-    O{.75cm}    % offset de cotation
-    m       % premier point
-    m       % second point
-    m       % étiquette
-    D<>{o}  % () coordonnées -> angle
-            % h -> horizontal,
-            % v -> vertical
-            % r -> radius
-            % o or what ever -> oblique
-    O{}     % parametre du tikzset
+    s           % Is the star. With star the arrow is external.
+    D<>{1pt}    % Offset of limit lines (deprecated!)
+    O{7mm}    % offset de cotation
+    m           % premier point
+    m           % second point
+    m           % étiquette
+    D<>{o}      % () coordonnées -> angle
+                % h -> horizontal,
+                % v -> vertical
+                % r -> radius
+                % o or what ever -> oblique
+    O{}         % parametre du tikzset
     }{%
 
     {\tikzset{#8}
@@ -58,10 +58,11 @@
         \coordinate (@4) at ($#4!#3!-90:#5$) ;
     \fi\fi\fi\fi
 
+      % Put the limit lines, only if isn't radius
       \if #7r
       \else
-        \draw[Cote, shorten >= #2, shorten <= -2*#2] (@4) -- #4 ;
-        \draw[Cote, shorten >= #2, shorten <= -2*#2] (@5) -- #5 ;
+        \draw[Cote, shorten >= 1mm, shorten <= -3mm] (@4) -- #4 ;
+        \draw[Cote, shorten >= 1mm, shorten <= -3mm] (@5) -- #5 ;
       \fi
 
     \IfBooleanTF #1 {% Con asterisco
@@ -70,7 +71,7 @@
       \draw[Cote,<-] (@5) -- ($(@5)!-6pt!(@4)$) ;   
     }{%Sin asterisco
     \ifnum\pdfstrcmp{\unexpanded\expandafter{\@car#7\@nil}}{(}=\z@
-      \draw[Cote, <->] (@5) to[bend right] node[Cote node] {#6\strut} (@4) ;
+      \draw[Cote, <-> ] (@5) to[bend right] node[Cote node] {#6\strut} (@4) ;
     \else
       \if #7r
         \draw[Cote, ->] (@4) -- (@5) node[Cote node] at ($ 0.5*(@4) + 0.5*(@5) $) {#6\strut};
