@@ -3,31 +3,16 @@
 \usetikzlibrary{calc}
 
 \tikzset{%
-    Cote node/.style={%
-        %sloped,    % This option ratate the text to the line (horizontal, vertical)
-        fill=white,
-        font=\footnotesize, 
-        inner sep=1pt, 
-        outer sep=1.5pt,
-        text=blue
+    Cote/.style={%
+      >=latex,
+      very thin,
+      font=\tiny, 
     },
-    Cote arrow/.style={%
-        <->,
-        >=latex,
-        very thin,
-        blue
+    Cote node/.style={Cote,
+      fill=white,
+      inner sep=0pt, 
+      outer sep=0pt,
     },
-    Cote radius/.style={%
-        ->,
-        >=latex,
-        very thin,
-        blue
-    },
-    Cote limite/.style={%
-        >=latex,
-        very thin,
-        blue
-    }
 }
 
 \makeatletter
@@ -75,22 +60,22 @@
 
       \if #7r
       \else
-        \draw[Cote limite, shorten >= #2, shorten <= -2*#2] (@4) -- #4 ;
-        \draw[Cote limite, shorten >= #2, shorten <= -2*#2] (@5) -- #5 ;
+        \draw[Cote, shorten >= #2, shorten <= -2*#2] (@4) -- #4 ;
+        \draw[Cote, shorten >= #2, shorten <= -2*#2] (@5) -- #5 ;
       \fi
 
     \IfBooleanTF #1 {% Con asterisco
-      \draw[Cote arrow,-] (@4) -- (@5) node[Cote node] at ($ 0.5*(@4) + 0.5*(@5) $) {#6\strut};
-      \draw[Cote arrow,<-] (@4) -- ($(@4)!-6pt!(@5)$) ;   
-      \draw[Cote arrow,<-] (@5) -- ($(@5)!-6pt!(@4)$) ;   
-    }{ %Sin asterisco
+      \draw[Cote,-] (@4) -- (@5) node[Cote node] at ($ 0.5*(@4) + 0.5*(@5) $) {#6\strut};
+      \draw[Cote,<-] (@4) -- ($(@4)!-6pt!(@5)$) ;   
+      \draw[Cote,<-] (@5) -- ($(@5)!-6pt!(@4)$) ;   
+    }{%Sin asterisco
     \ifnum\pdfstrcmp{\unexpanded\expandafter{\@car#7\@nil}}{(}=\z@
-      \draw[Cote arrow] (@5) to[bend right] node[Cote node] {#6\strut} (@4) ;
+      \draw[Cote, <->] (@5) to[bend right] node[Cote node] {#6\strut} (@4) ;
     \else
       \if #7r
-        \draw[Cote radius] (@4) -- (@5) node[Cote node] at ($ 0.5*(@4) + 0.5*(@5) $) {#6\strut};
+        \draw[Cote, ->] (@4) -- (@5) node[Cote node] at ($ 0.5*(@4) + 0.5*(@5) $) {#6\strut};
       \else
-        \draw[Cote arrow] (@4) -- (@5) node[Cote node] at ($ 0.5*(@4) + 0.5*(@5) $) {#6\strut};
+        \draw[Cote, <->] (@4) -- (@5) node[Cote node] at ($ 0.5*(@4) + 0.5*(@5) $) {#6\strut};
       \fi
     \fi
     }}
