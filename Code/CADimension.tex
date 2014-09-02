@@ -3,6 +3,8 @@
 \usetikzlibrary{calc,arrows.meta}
 
 % Default styles definition
+% This has to be here, because is executed when the library is load, before command invocation.
+% This is very important for avoid the re-definition of user styles
 \tikzset{% 
     prim-Dim/.style={%
       >={Latex[length=3mm, width=1.5mm]}, % Arrow head proprieties
@@ -24,21 +26,22 @@
 %                                 Input Parameters                                          %
 %-------------------------------------------------------------------------------------------%
 % Type? | brackets | Default |                  Mean
-    s                        % Is the star. With star the arrow is external.
-    D       <>        {1pt}  % Offset of limit lines (deprecated!)
-    O                 {7mm}  % Offset of dimension line
-    m                        % First point
-    m                        % Second point
-    m                        % Label
-    D       <>         {o}   % h: Horizontal, v: Vertical, r: Radius, a: Angle, o: Oblique
-    O                  {}    % Parameters for include in tikzset
+    s                        % #1 Is the star. With star the arrow is external.
+    D       <>         {o}   % #2 Label position (it's a point)
+    O                 {10mm}  % #3 Offset of dimension line
+    m                        % #4 First point
+    m                        % #5 Second point
+    D       <>         {o}   % #6 Third point. It's useful in angle dimension
+    m                        % #7 Label
+    D       <>         {o}   % #8 h: Horizontal, v: Vertical, r: Radius, a: Angle, o: Oblique
+    O                  {}    % #9 Parameters for include in tikzset
 %-------------------------------------------------------------------------------------------%
 }{%
 
 {%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Start the body of Command  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   
   % User defined styles
-  \tikzset{#8}
+  \tikzset{#9}
 
   % Total styles
   \tikzset{%
@@ -46,55 +49,73 @@
     Node/.style ={prim-DimNode,DimNode},
   }
 
-  % Coordinates calculation
-  \coordinate (@1) at #4 ;
-  \coordinate (@2) at #5 ;
+  %---------------------------------- Coordinates calculation -------------------------------
+  % (@0) -> Is the label position
+  % (@1) -> Is the first limit line point
+  % (@2) -> Is the second limit line point
+  % (@3) -> Is the first dimension line point 
+  % (@4) -> Is the second dimension line point 
 
-  \if #7v % Vertical dimension
-      \coordinate (@0) at ($($#4!.5!#5$) + (#3,0)$) ; 
-      \coordinate (@4) at (@0|-@1) ;
-      \coordinate (@5) at (@0|-@2) ;
-  \else
-  \if #7h % Horizontal dimension
-      \coordinate (@0) at ($($#4!.5!#5$) + (0,#3)$) ; 
-      \coordinate (@4) at (@0-|@1) ;
-      \coordinate (@5) at (@0-|@2) ;
-  \else 
-  \if #7r % Radial dimension
-      \coordinate (@4) at (@1) ;
-      \coordinate (@5) at (@2) ;
-  \else % cotation encoche
-  \ifnum\pdfstrcmp{\unexpanded\expandafter{\@car#7\@nil}}{(}=\z@
-  % \if #7a % Angular dimension
-      \coordinate (@5) at ($#7!#3!#5$) ;
-      \coordinate (@4) at ($#7!#3!#4$) ;
-  \else % cotation oblique    
-      \coordinate (@5) at ($#5!#3!90:#4$) ;
-      \coordinate (@4) at ($#4!#3!-90:#5$) ;
-  \fi\fi\fi\fi
+  \coordinate (@1) at #4;
+  \coordinate (@2) at #5;
 
-  % Put the limit lines, only if isn't radius
-  \if #7r
-    % Center circle and center lines?
-  \else
-    \draw[Dim, shorten >= 1mm, shorten <= -3mm] (@4) -- #4 ;
-    \draw[Dim, shorten >= 1mm, shorten <= -3mm] (@5) -- #5 ;
+  \if #8v % Vertical dimension
+    \coordinate (@0) at ($($#4!.5!#5$) + (#3,0)$); 
+    \coordinate (@3) at (@0|-@1);
+    \coordinate (@4) at (@0|-@2);
+
+  \else\if #8h % Horizontal dimension
+    \coordinate (@0) at ($($#4!.5!#5$) + (0,#3)$); 
+    \coordinate (@3) at (@0-|@1);
+    \coordinate (@4) at (@0-|@2);
+
+  \else\if #8r % Radial dimension
+      \coordinate (@3) at (@1);
+      \coordinate (@4) at (@2);
+
+  \else\if #8a % Angular dimension
+      \coordinate (@4) at ($#6!#3!#5$);
+      \coordinate (@3) at ($#6!#3!#4$);
+
+  \else\if #8o % Oblique dimension   
+      \coordinate (@4) at ($#5!#3!90:#4$);
+      \coordinate (@3) at ($#4!#3!-90:#5$);
+
+  \fi\fi\fi\fi\fi
+
+  %-------------------------------------- Put limit lines -----------------------------------
+
+  \if #8r % If is radius dimension
+    \draw[Dim, fill] (@1) circle (0.3mm);
+    \draw[Dim] ($(@1) + (0,1.5mm)$) -- ($(@1) + (0,-1.5mm)$);
+    \draw[Dim] ($(@1) + (1.5mm,0)$) -- ($(@1) + (-1.5mm,0)$);
+
+  \else % If isn't radius dimension
+    \draw[Dim, shorten >= 1mm, shorten <= -3mm] (@3) -- (@1);
+    \draw[Dim, shorten >= 1mm, shorten <= -3mm] (@4) -- (@2);
+
   \fi
+
+  %----------------------------------- Put dimension lines -----------------------------------
 
   \IfBooleanTF #1 {% Con asterisco
-    \draw[Dim,-] (@4) -- (@5) node[Node] at ($ 0.5*(@4) + 0.5*(@5) $) {#6\strut};
-    \draw[Dim,<-] (@4) -- ($(@4)!-6pt!(@5)$) ;   
-    \draw[Dim,<-] (@5) -- ($(@5)!-6pt!(@4)$) ;   
+
+    % \if #8a
+
+    \draw[Dim,-] (@3) -- (@4) node[Node] at ($ 0.5*(@3) + 0.5*(@4) $) {#7\strut};
+    \draw[Dim,<-] (@3) -- ($(@3)!-5mm!(@4)$);   
+    \draw[Dim,<-] (@4) -- ($(@4)!-5mm!(@3)$);   
+
   }{%Sin asterisco
-  \ifnum\pdfstrcmp{\unexpanded\expandafter{\@car#7\@nil}}{(}=\z@
-    \draw[Dim, <-> ] (@5) to[bend right] node[Node] {#6\strut} (@4) ;
+
+  \if #8a % Angular dimension
+    \draw[Dim, <-> ] (@4) to[bend right] node[Node] {#7\strut} (@3);
+  \else\if #8r
+    \draw[Dim, ->] (@3) -- (@4) node[Node] at ($ 0.5*(@3) + 0.5*(@4) $) {#7\strut};
   \else
-    \if #7r
-      \draw[Dim, ->] (@4) -- (@5) node[Node] at ($ 0.5*(@4) + 0.5*(@5) $) {#6\strut};
-    \else
-      \draw[Dim, <->] (@4) -- (@5) node[Node] at ($ 0.5*(@4) + 0.5*(@5) $) {#6\strut};
-    \fi
-  \fi
+    \draw[Dim, <->] (@3) -- (@4) node[Node] at ($ 0.5*(@3) + 0.5*(@4) $) {#7\strut};
+  \fi\fi
+
   }}
 }
 \makeatother
