@@ -1,0 +1,93 @@
+\documentclass[tikz,margin=5pt,12pt]{standalone}
+\input{../../Code/CADimension}
+\begin{document}
+\begin{tikzpicture}
+
+%--------------------  Base figure  ------------------------------
+
+\tikzset{%
+  fix/.style = {very thick},
+  tmp/.style = {very thin, green},
+  ctr/.style = {loosely dashdotted, blue},
+  dot/.style = {very thin, red},
+}
+
+\def\Ra{16mm}
+\def\Rb{50mm}
+
+\coordinate (C1) at (16mm,0mm);
+\coordinate (C2) at (150mm,0mm);
+
+% Body
+% \draw[fix] (\Ra,\Ra) -- (69mm,\Ra);
+% \draw[fix] (\Ra,-\Ra) -- (88mm,-\Ra);
+
+%Body curves
+% \draw[dot] ($(C2) + (135.4:\Rb+64mm)$) circle (0.1mm); 
+% \draw[dot] ($(C2) + (199.2:16mm) + (217.2:59mm)$) circle (0.1mm);
+
+% \draw[fix] ($(C2) + (135.45:\Rb+64mm) + (316:64mm)$) arc (316:270:64mm); 
+% \draw[fix] ($(C2) + (199.2:16mm) + (217.3:59mm) + (42:25mm)$) arc (42:90:25mm); 
+
+% Left side
+% \draw[fix] ($(C1) + (90:\Ra)$) arc (90:270:\Ra); 
+% \draw[ctr] (-10mm,0) -- (200mm,0);
+% \draw[ctr] (\Ra,-25mm) -- (\Ra,25mm);
+
+% Head
+% \draw[fix] ($(C2) + (130:\Rb)$) arc (130:200:\Rb); 
+
+% External circles
+% \draw[fix] ($ (C2) + (130.7:16mm) + (5.5:34mm)$) arc (5.5:130:34mm);
+% \draw[fix] ($ (C2) + (199.2:16mm) + (324.5:34mm)$) arc (324.5:200:34mm);
+
+% Internal circle
+% \draw[fix] ($(C2) + (105:22mm)$) arc (105:225:22mm);
+% \draw[fix] ($(C2) + (75:19mm)  + (-15:-11.2mm)$) -- ($(C2) + (75:19mm)  + (-15:17mm)$);
+% \draw[fix] ($(C2) + (255:19mm) + (-15:-11.2mm)$) -- ($(C2) + (255:19mm) + (-15:17mm)$);
+
+% Roudn corners
+% \draw[dot] ($ (C2) + (130.7:16mm) + (6:32.4mm)$) circle (0.1mm);
+% \draw[dot] ($ (C2) + (199.2:16mm) + (324:32.4mm)$) circle (0.1mm);
+% \draw[fix] ($ (C2) + (130.7:16mm) + (6:32.4mm) + (0:1.6mm)$) arc (00:-110:1.6mm);
+% \draw[fix] ($ (C2) + (199.2:16mm) + (324:32.4mm) + (-30:1.6mm)$) arc (-30:80:1.6mm);
+
+    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\draw[fix] 
+        ($(C1) + (90:\Ra)$) 
+  arc   (90:270:\Ra)
+  --    (88mm,-\Ra)
+  arc   (90:42:25mm)
+  arc   (213.5:200:34mm)
+  arc   (200:135:\Rb)
+  arc   (316:270:64mm)
+  --    cycle; 
+
+\draw[fix]
+        ($(C2) + (130:\Rb)$) 
+  arc   (130:200:\Rb)
+  arc   (200:324.5:34mm)
+  arc   (-30:80:1.6mm)
+  --    ($(C2) + (255:19mm) + (-15:-11.2mm)$)
+  arc   (225:105:22mm)
+  --    ($(C2) + (75:19mm) + (-15:17mm)$)
+  arc   (-110:-00:1.6mm)
+  arc   (5.5:130:34mm)
+  --    cycle;
+
+\draw[ctr] (-10mm,0) -- (180mm,0);
+\draw[ctr] (\Ra,-25mm) -- (\Ra,25mm);
+
+\draw[dot] ($ (C2) + (199.2:16mm)$) circle (0.1mm);
+\draw[dot] ($ (C2) + (130.7:16mm)$) circle (0.1mm);
+
+\draw[dot] ($ (C2) + (130.7:16mm) + (6:32.4mm)$) circle (0.1mm);
+\draw[dot] ($ (C2) + (199.2:16mm) + (324:32.4mm)$) circle (0.1mm);
+
+\draw[dot] ($(C2) + (135.4:\Rb+64mm)$) circle (0.1mm); 
+\draw[dot] ($(C2) + (199.2:16mm) + (217.2:59mm)$) circle (0.1mm);
+
+\end{tikzpicture}
+\end{document}  
