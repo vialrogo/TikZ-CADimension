@@ -1,10 +1,45 @@
 \documentclass[tikz,margin=5pt,12pt]{standalone}
 \input{../../Code/CADimension}
+\usetikzlibrary{patterns}
 \begin{document}
 \begin{tikzpicture}
 
-%--------------------  Base figure  ------------------------------
+%-------------------- Irregular line  ------------------------------
+\NewDocumentCommand{\irregularline}{%
+  O     {2mm}   % Amplitude of irregularity. Optional. Default value = 2mm
+  m             % First point
+  m             % Second point
+  D   <> {20}   % Number of peaks. Optional. Default value = 20
+  O       {}    % Draw options
+}{{%
+    \coordinate (old) at #2;
+    \foreach \i in {1,2,...,#4}{
+      % This crazy line means:
+      % draw from old to [ (i% from #2 to #3) + (#1*rand perpendicular to #2-#3) - (#2 because was added twice) ]
+      \draw[#5] (old) -- ($ ($#2!\i/(#4+1)!#3$) + ($#2!#1*rand!-90:#3$) - ($#2$) $) coordinate (old);
+    }
+    \draw[#5] (old) -- #3;
+  }}
 
+%-------------------- Pattern definition  ------------------------------
+\tikzset{%
+  hatch distance/.store in=\hatchdistance, 
+  hatch distance=10pt,
+  hatch thickness/.store in=\hatchthickness,
+  hatch thickness=1pt,
+}
+\pgfdeclarepatternformonly[\hatchdistance,\hatchthickness]{section}
+{\pgfqpoint{0pt}{0pt}}
+{\pgfqpoint{\hatchdistance}{\hatchdistance}}
+{\pgfpoint{\hatchdistance-1pt}{\hatchdistance-1pt}}%
+{%
+  \pgfsetlinewidth{\hatchthickness}
+  \pgfpathmoveto{\pgfqpoint{0pt}{0pt}}
+  \pgfpathlineto{\pgfqpoint{\hatchdistance}{\hatchdistance}}
+  \pgfusepath{stroke}
+}
+
+%--------------------  Base figure  ------------------------------
 \tikzset{%
   fix/.style = {very thick},
   tmp/.style = {very thin, green},
@@ -19,75 +54,48 @@
 \coordinate (C2) at (150mm,0mm);
 
 % Body
-% \draw[fix] (\Ra,\Ra) -- (69mm,\Ra);
-% \draw[fix] (\Ra,-\Ra) -- (88mm,-\Ra);
+\draw[fix] (\Ra,\Ra) -- (30mm,\Ra);
+\draw[fix] (\Ra,-\Ra) -- (30mm,-\Ra);
+\draw[fix] (60mm,\Ra) -- (69mm,\Ra);
+\draw[fix] (60mm,-\Ra) -- (88mm,-\Ra);
+\irregularline[1mm]{(30mm,\Ra)}{(30mm,-\Ra)}<10>[fix]
+\irregularline[1mm]{(60mm,\Ra)}{(60mm,-\Ra)}<10>[fix]
 
 %Body curves
-% \draw[dot] ($(C2) + (135.4:\Rb+64mm)$) circle (0.1mm); 
-% \draw[dot] ($(C2) + (199.2:16mm) + (217.2:59mm)$) circle (0.1mm);
+\draw[dot] ($(C2) + (135.4:\Rb+64mm)$) circle (0.1mm); 
+\draw[dot] ($(C2) + (199.2:16mm) + (217.2:59mm)$) circle (0.1mm);
 
-% \draw[fix] ($(C2) + (135.45:\Rb+64mm) + (316:64mm)$) arc (316:270:64mm); 
-% \draw[fix] ($(C2) + (199.2:16mm) + (217.3:59mm) + (42:25mm)$) arc (42:90:25mm); 
+\draw[fix] ($(C2) + (135.45:\Rb+64mm) + (316:64mm)$) arc (316:270:64mm); 
+\draw[fix] ($(C2) + (199.2:16mm) + (217.3:59mm) + (42:25mm)$) arc (42:90:25mm); 
 
 % Left side
-% \draw[fix] ($(C1) + (90:\Ra)$) arc (90:270:\Ra); 
-% \draw[ctr] (-10mm,0) -- (200mm,0);
-% \draw[ctr] (\Ra,-25mm) -- (\Ra,25mm);
-
-% Head
-% \draw[fix] ($(C2) + (130:\Rb)$) arc (130:200:\Rb); 
-
-% External circles
-% \draw[fix] ($ (C2) + (130.7:16mm) + (5.5:34mm)$) arc (5.5:130:34mm);
-% \draw[fix] ($ (C2) + (199.2:16mm) + (324.5:34mm)$) arc (324.5:200:34mm);
-
-% Internal circle
-% \draw[fix] ($(C2) + (105:22mm)$) arc (105:225:22mm);
-% \draw[fix] ($(C2) + (75:19mm)  + (-15:-11.2mm)$) -- ($(C2) + (75:19mm)  + (-15:17mm)$);
-% \draw[fix] ($(C2) + (255:19mm) + (-15:-11.2mm)$) -- ($(C2) + (255:19mm) + (-15:17mm)$);
-
-% Roudn corners
-% \draw[dot] ($ (C2) + (130.7:16mm) + (6:32.4mm)$) circle (0.1mm);
-% \draw[dot] ($ (C2) + (199.2:16mm) + (324:32.4mm)$) circle (0.1mm);
-% \draw[fix] ($ (C2) + (130.7:16mm) + (6:32.4mm) + (0:1.6mm)$) arc (00:-110:1.6mm);
-% \draw[fix] ($ (C2) + (199.2:16mm) + (324:32.4mm) + (-30:1.6mm)$) arc (-30:80:1.6mm);
-
-    
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\draw[fix] 
-        ($(C1) + (90:\Ra)$) 
-  arc   (90:270:\Ra)
-  --    (88mm,-\Ra)
-  arc   (90:42:25mm)
-  arc   (213.5:200:34mm)
-  arc   (200:135:\Rb)
-  arc   (316:270:64mm)
-  --    cycle; 
-
-\draw[fix]
-        ($(C2) + (130:\Rb)$) 
-  arc   (130:200:\Rb)
-  arc   (200:324.5:34mm)
-  arc   (-30:80:1.6mm)
-  --    ($(C2) + (255:19mm) + (-15:-11.2mm)$)
-  arc   (225:105:22mm)
-  --    ($(C2) + (75:19mm) + (-15:17mm)$)
-  arc   (-110:-00:1.6mm)
-  arc   (5.5:130:34mm)
-  --    cycle;
-
+\draw[fix] ($(C1) + (90:\Ra)$) arc (90:270:\Ra); 
 \draw[ctr] (-10mm,0) -- (180mm,0);
 \draw[ctr] (\Ra,-25mm) -- (\Ra,25mm);
+
+% Head
+\draw[fix] ($(C2) + (130:\Rb)$) arc (130:200:\Rb); 
+
+% External circles
+\draw[fix] ($ (C2) + (130.7:16mm) + (5.5:34mm)$) arc (5.5:130:34mm);
+\draw[fix] ($ (C2) + (199.2:16mm) + (324.5:34mm)$) arc (324.5:200:34mm);
 
 \draw[dot] ($ (C2) + (199.2:16mm)$) circle (0.1mm);
 \draw[dot] ($ (C2) + (130.7:16mm)$) circle (0.1mm);
 
+% Internal circle
+\draw[fix] ($(C2) + (105:22mm)$) arc (105:225:22mm);
+\draw[fix] ($(C2) + (75:19mm)  + (-15:-11.2mm)$) -- ($(C2) + (75:19mm)  + (-15:17mm)$);
+\draw[fix] ($(C2) + (255:19mm) + (-15:-11.2mm)$) -- ($(C2) + (255:19mm) + (-15:17mm)$);
+
+% Roudn corners
 \draw[dot] ($ (C2) + (130.7:16mm) + (6:32.4mm)$) circle (0.1mm);
 \draw[dot] ($ (C2) + (199.2:16mm) + (324:32.4mm)$) circle (0.1mm);
+\draw[fix] ($ (C2) + (130.7:16mm) + (6:32.4mm) + (0:1.6mm)$) arc (00:-110:1.6mm);
+\draw[fix] ($ (C2) + (199.2:16mm) + (324:32.4mm) + (-30:1.6mm)$) arc (-30:80:1.6mm);
 
-\draw[dot] ($(C2) + (135.4:\Rb+64mm)$) circle (0.1mm); 
-\draw[dot] ($(C2) + (199.2:16mm) + (217.2:59mm)$) circle (0.1mm);
-
+% Section
+\draw[pattern=section, hatch distance=12pt, hatch thickness=1pt, fix] (45mm,0) ellipse (7mm and \Ra);
+    
 \end{tikzpicture}
 \end{document}  
