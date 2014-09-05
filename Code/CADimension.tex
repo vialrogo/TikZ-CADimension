@@ -13,15 +13,15 @@
     },
     prim-DimNode/.style={prim-Dim,
       fill=white,                         % Fill with color background, by default white
-      inner sep=0pt,                      % Space to the line 
-      outer sep=0pt,                      % Space to the line 
+      inner sep=1pt,                      % Space to the line 
+      outer sep=1pt,                      % Space to the line 
     },
     Dimension/.style={},                  % Empty style for user use
     DimNode/.style={},                    % Empty style for user use
 }
 
 \makeatletter
-\NewDocumentCommand{\Cote}{%
+\NewDocumentCommand{\CADim}{%
 %-------------------------------------------------------------------------------------------%
 %                                 Input Parameters                                          %
 %-------------------------------------------------------------------------------------------%
@@ -53,33 +53,35 @@
   % (@0) -> Is the label position
   % (@1) -> Is the first limit line point
   % (@2) -> Is the second limit line point
-  % (@3) -> Is the first dimension line point 
-  % (@4) -> Is the second dimension line point 
+  % (@3) -> Is the third limit line point (only for angular dimension)
+  % (@4) -> Is the first dimension line point 
+  % (@5) -> Is the second dimension line point 
 
   \coordinate (@1) at #4;
   \coordinate (@2) at #5;
 
   \if #8v % Vertical dimension
     \coordinate (@0) at ($($#4!.5!#5$) + (#3,0)$); 
-    \coordinate (@3) at (@0|-@1);
-    \coordinate (@4) at (@0|-@2);
+    \coordinate (@4) at (@0|-@1);
+    \coordinate (@5) at (@0|-@2);
 
   \else\if #8h % Horizontal dimension
     \coordinate (@0) at ($($#4!.5!#5$) + (0,#3)$); 
-    \coordinate (@3) at (@0-|@1);
-    \coordinate (@4) at (@0-|@2);
+    \coordinate (@4) at (@0-|@1);
+    \coordinate (@5) at (@0-|@2);
 
   \else\if #8r % Radial dimension
-      \coordinate (@3) at (@1);
-      \coordinate (@4) at (@2);
+      \coordinate (@4) at (@1);
+      \coordinate (@5) at (@2);
 
   \else\if #8a % Angular dimension
-      \coordinate (@4) at ($#6!#3!#5$);
-      \coordinate (@3) at ($#6!#3!#4$);
+      \coordinate (@3) at ($#6$);
+      \coordinate (@4) at ($#6!#3!#4$);
+      \coordinate (@5) at ($#6!#3!#5$);
 
   \else\if #8o % Oblique dimension   
-      \coordinate (@4) at ($#5!#3!90:#4$);
-      \coordinate (@3) at ($#4!#3!-90:#5$);
+      \coordinate (@4) at ($#4!#3!-90:#5$);
+      \coordinate (@5) at ($#5!#3!90:#4$);
 
   \fi\fi\fi\fi\fi
 
@@ -91,31 +93,46 @@
     \draw[Dim] ($(@1) + (1.5mm,0)$) -- ($(@1) + (-1.5mm,0)$);
 
   \else % If isn't radius dimension
-    \draw[Dim, shorten >= 1mm, shorten <= -3mm] (@3) -- (@1);
-    \draw[Dim, shorten >= 1mm, shorten <= -3mm] (@4) -- (@2);
+    \draw[Dim, shorten >= 1mm, shorten <= -3mm] (@4) -- (@1);
+    \draw[Dim, shorten >= 1mm, shorten <= -3mm] (@5) -- (@2);
 
   \fi
 
   %----------------------------------- Put dimension lines -----------------------------------
 
-  \IfBooleanTF #1 {% Con asterisco
+  \IfBooleanTF #1 {% With star
+    
+    \if #8a % Angular dimension
+      \pgfmathanglebetweenpoints{\pgfpointanchor{@3}{center}}{\pgfpointanchor{@4}{center}}
+      \let\Angle\pgfmathresult
+      \def\DeltaA{300mm/#3} % This fix always 5,2mm for the line
+      \draw[Dim,<-] (@4) arc (\Angle:\Angle+\DeltaA:#3);
+      \draw[Dim,<-] (@5) arc (180-\Angle:180-\Angle-\DeltaA:#3);
+      \node[Dim,Node] at ($ (@3)!#3!($0.5*(@4) + 0.5*(@5)$) $) {#7\strut};
 
-    % \if #8a
+    \else\if #8r % Radial dimension
+      \draw[Dim, ->] (@4) -- (@5) node[Dim,Node] at ($ 0.5*(@4) + 0.5*(@5) $) {#7\strut};
 
-    \draw[Dim,-] (@3) -- (@4) node[Node] at ($ 0.5*(@3) + 0.5*(@4) $) {#7\strut};
-    \draw[Dim,<-] (@3) -- ($(@3)!-5mm!(@4)$);   
-    \draw[Dim,<-] (@4) -- ($(@4)!-5mm!(@3)$);   
+    \else % Others dimensions
+      \node[Dim,Node] at ($ 0.5*(@4) + 0.5*(@5) $) {#7\strut};
+      \draw[Dim,<-] (@4) -- ($(@4)!-5mm!(@5)$);   
+      \draw[Dim,<-] (@5) -- ($(@5)!-5mm!(@4)$);   
 
-  }{%Sin asterisco
+    \fi\fi
+  }{% Without star
 
-  \if #8a % Angular dimension
-    \draw[Dim, <-> ] (@4) to[bend right] node[Node] {#7\strut} (@3);
-  \else\if #8r
-    \draw[Dim, ->] (@3) -- (@4) node[Node] at ($ 0.5*(@3) + 0.5*(@4) $) {#7\strut};
-  \else
-    \draw[Dim, <->] (@3) -- (@4) node[Node] at ($ 0.5*(@3) + 0.5*(@4) $) {#7\strut};
-  \fi\fi
+    \if #8a % Angular dimension
+      \pgfmathanglebetweenpoints{\pgfpointanchor{@3}{center}}{\pgfpointanchor{@4}{center}}
+      \let\Angle\pgfmathresult
+      \draw[Dim, <->] (@4) to[out=\Angle-90, in=-\Angle-90]  node[Dim,Node] {#7\strut} (@5);
 
+    \else\if #8r % Radial dimension
+      \draw[Dim, ->] (@4) -- (@5) node[Dim,Node] at ($ 0.5*(@4) + 0.5*(@5) $) {#7\strut};
+    
+      \else % Others dimensions
+      \draw[Dim, <->] (@4) -- (@5) node[Dim,Node] at ($ 0.5*(@4) + 0.5*(@5) $) {#7\strut};
+    
+    \fi\fi
   }}
 }
 \makeatother
