@@ -39,6 +39,11 @@
       --  (20,13) coordinate (W) 
       --  (16,12) coordinate (X);
 
+\draw (8,10)  coordinate (Z1) -- (12,10) coordinate (Z2);
+\draw (10,12) coordinate (Z3) -- (10,8)  coordinate (Z4);
+
+\coordinate (Z0) ato (10,10);
+
 %--------------------  Dimension lines  ------------------------------
 
 \begin{scope}[Dimension/.style= {blue, text=blue},
@@ -55,6 +60,16 @@
 
 \CADim[50mm]{(U)}{(S)}<(T)>{$\beta$}<a>
 \CADim*[50mm]{(X)}{(V)}<(W)>{$\beta$}<a>
+
+\CADim[25mm]{(Z1)}{(Z3)}<(Z0)>{$\beta$}<a>
+\CADim[25mm]{(Z3)}{(Z2)}<(Z0)>{$\beta$}<a>
+\CADim[25mm]{(Z2)}{(Z4)}<(Z0)>{$\beta$}<a>
+\CADim[25mm]{(Z4)}{(Z1)}<(Z0)>{$\beta$}<a>
+
+\CADim*[35mm]{(Z1)}{(Z3)}<(Z0)>{$\beta$}<a>
+\CADim*[35mm]{(Z3)}{(Z2)}<(Z0)>{$\beta$}<a>
+\CADim*[35mm]{(Z2)}{(Z4)}<(Z0)>{$\beta$}<a>
+\CADim*[35mm]{(Z4)}{(Z1)}<(Z0)>{$\beta$}<a>
 
 \end{scope}
 
