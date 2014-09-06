@@ -1,0 +1,62 @@
+\documentclass[tikz,margin=5pt,12pt]{standalone}
+\input{../../Code/CADimension}
+\usetikzlibrary{patterns}
+\begin{document}
+\begin{tikzpicture}
+
+%--------------------------  Body  -----------------------------------
+\draw (-1,-1) -- (21,-1) -- (21,21) -- (-1,21) -- cycle;
+
+\draw     (6,4) coordinate (A)
+      --  (7,0) coordinate (B)
+      --  (8,4) coordinate (C);
+    
+\draw     (12,4) coordinate (D)
+      --  (13,0) coordinate (E)
+      --  (14,4) coordinate (F);
+    
+\draw     (6,16) coordinate (G)
+      --  (7,20) coordinate (H)
+      --  (8,16) coordinate (I);
+    
+\draw     (12,16) coordinate (J)
+      --  (13,20) coordinate (K) 
+      --  (14,16) coordinate (L);
+    
+\draw     (4,8) coordinate (M)
+      --  (0,7) coordinate (N) 
+      --  (4,6) coordinate (O);
+    
+\draw     (4,14) coordinate (P)
+      --  (0,13) coordinate (Q) 
+      --  (4,12) coordinate (R);
+    
+\draw     (16,8) coordinate (S)
+      --  (20,7) coordinate (T) 
+      --  (16,6) coordinate (U);
+    
+\draw     (16,14) coordinate (V)
+      --  (20,13) coordinate (W) 
+      --  (16,12) coordinate (X);
+
+%--------------------  Dimension lines  ------------------------------
+
+\begin{scope}[Dimension/.style= {blue, text=blue},
+              DimNode/.style  = {font=\large}]
+
+\CADim[50mm]{(A)}{(C)}<(B)>{$\beta$}<a>
+\CADim*[50mm]{(D)}{(F)}<(E)>{$\beta$}<a>
+
+\CADim*[50mm]{(I)}{(G)}<(H)>{$\beta$}<a>
+\CADim[50mm]{(L)}{(J)}<(K)>{$\beta$}<a>
+
+\CADim*[50mm]{(M)}{(O)}<(N)>{$\beta$}<a>
+\CADim[50mm]{(P)}{(R)}<(Q)>{$\beta$}<a>
+
+\CADim[50mm]{(U)}{(S)}<(T)>{$\beta$}<a>
+\CADim*[50mm]{(X)}{(V)}<(W)>{$\beta$}<a>
+
+\end{scope}
+
+\end{tikzpicture}
+\end{document}  

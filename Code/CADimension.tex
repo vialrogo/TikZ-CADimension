@@ -104,10 +104,12 @@
     
     \if #8a % Angular dimension
       \pgfmathanglebetweenpoints{\pgfpointanchor{@3}{center}}{\pgfpointanchor{@4}{center}}
-      \let\Angle\pgfmathresult
-      \def\DeltaA{300mm/#3} % This fix always 5,2mm for the line
-      \draw[Dim,<-] (@4) arc (\Angle:\Angle+\DeltaA:#3);
-      \draw[Dim,<-] (@5) arc (180-\Angle:180-\Angle-\DeltaA:#3);
+      \let\AngleA\pgfmathresult
+      \pgfmathanglebetweenpoints{\pgfpointanchor{@3}{center}}{\pgfpointanchor{@5}{center}}
+      \let\AngleB\pgfmathresult
+      \def\Delta{900mm/#3} % This fix always 5,2mm for the line
+      \draw[Dim,<-] (@4) arc (\AngleA:\AngleA+\Delta:#3);
+      \draw[Dim,<-] (@5) arc (\AngleB:\AngleB-\Delta:#3);
       \node[Dim,Node] at ($ (@3)!#3!($0.5*(@4) + 0.5*(@5)$) $) {#7\strut};
 
     \else\if #8r % Radial dimension
@@ -123,8 +125,11 @@
 
     \if #8a % Angular dimension
       \pgfmathanglebetweenpoints{\pgfpointanchor{@3}{center}}{\pgfpointanchor{@4}{center}}
-      \let\Angle\pgfmathresult
-      \draw[Dim, <->] (@4) to[out=\Angle-90, in=-\Angle-90]  node[Dim,Node] {#7\strut} (@5);
+      \let\AngleA\pgfmathresult
+      \pgfmathanglebetweenpoints{\pgfpointanchor{@3}{center}}{\pgfpointanchor{@5}{center}}
+      \let\AngleB\pgfmathresult
+      \draw[Dim, <->] (@4) to[out=\AngleA-90, in=\AngleB+90]  node[Dim,Node] {#7\strut} (@5);
+      \node[Dim,Node] at ($ (@3)!#3!($0.5*(@4) + 0.5*(@5)$) $) {#7\strut};
 
     \else\if #8r % Radial dimension
       \draw[Dim, ->] (@4) -- (@5) node[Dim,Node] at ($ 0.5*(@4) + 0.5*(@5) $) {#7\strut};
