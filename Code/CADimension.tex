@@ -98,6 +98,29 @@
 
   \fi
 
+  %-----------------------------  Calculate the label position  ------------------------------
+
+  \if #2o % If point isn't specified
+    \if #8a % Angular dimension
+      \coordinate (@6) at ($(@3)!#3!($0.5*(@4) + 0.5*(@5)$)$);
+
+    \else\if #8r % Radial dimension
+      \IfBooleanTF #1 {% With star
+        \coordinate (@6) at ($(@5)!-10mm!(@4)$);
+      }{% Without star
+        \coordinate (@6) at ($0.5*(@4) + 0.5*(@5)$);
+      }
+
+    \else % Others dimensions
+      \coordinate (@6) at ($0.5*(@4) + 0.5*(@5)$);
+
+    \fi\fi
+
+  \else % The point is specified
+    \coordinate (@6) at #2;
+
+  \fi
+
   %----------------------------------- Put dimension lines -----------------------------------
 
   \IfBooleanTF #1 {% With star
@@ -107,16 +130,17 @@
       \let\AngleA\pgfmathresult
       \pgfmathanglebetweenpoints{\pgfpointanchor{@3}{center}}{\pgfpointanchor{@5}{center}}
       \let\AngleB\pgfmathresult
-      \def\Delta{900mm/#3} % This fix always 5,2mm for the line
+      \def\Delta{300mm/#3} % This fix always 5,2mm for the line
       \draw[Dim,<-] (@4) arc (\AngleA:\AngleA+\Delta:#3);
       \draw[Dim,<-] (@5) arc (\AngleB:\AngleB-\Delta:#3);
-      \node[Dim,Node] at ($ (@3)!#3!($0.5*(@4) + 0.5*(@5)$) $) {#7\strut};
+      \node[Dim,Node] at (@6) {#7\strut};
 
     \else\if #8r % Radial dimension
-      \draw[Dim, ->] (@4) -- (@5) node[Dim,Node] at ($ 0.5*(@4) + 0.5*(@5) $) {#7\strut};
+      \coordinate (LAB) ato ($(@6) + (#3,0)$);
+      \draw[Dim, <-] (@5) -- (@6) -- (LAB) node[Dim,Node] at (LAB) {#7\strut};
 
     \else % Others dimensions
-      \node[Dim,Node] at ($ 0.5*(@4) + 0.5*(@5) $) {#7\strut};
+      \node[Dim,Node] at (@6) {#7\strut};
       \draw[Dim,<-] (@4) -- ($(@4)!-5mm!(@5)$);   
       \draw[Dim,<-] (@5) -- ($(@5)!-5mm!(@4)$);   
 
@@ -129,13 +153,12 @@
       \pgfmathanglebetweenpoints{\pgfpointanchor{@3}{center}}{\pgfpointanchor{@5}{center}}
       \let\AngleB\pgfmathresult
       \draw[Dim, <->] (@4) to[out=\AngleA-90, in=\AngleB+90]  node[Dim,Node] {#7\strut} (@5);
-      \node[Dim,Node] at ($ (@3)!#3!($0.5*(@4) + 0.5*(@5)$) $) {#7\strut};
 
     \else\if #8r % Radial dimension
-      \draw[Dim, ->] (@4) -- (@5) node[Dim,Node] at ($ 0.5*(@4) + 0.5*(@5) $) {#7\strut};
+      \draw[Dim, ->] (@4) -- (@5) node[Dim,Node] at (@6) {#7\strut};
     
-      \else % Others dimensions
-      \draw[Dim, <->] (@4) -- (@5) node[Dim,Node] at ($ 0.5*(@4) + 0.5*(@5) $) {#7\strut};
+    \else % Others dimensions
+      \draw[Dim, <->] (@4) -- (@5) node[Dim,Node] at (@6) {#7\strut};
     
     \fi\fi
   }}

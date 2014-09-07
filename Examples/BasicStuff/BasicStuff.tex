@@ -36,11 +36,12 @@
 
   \CADim[20mm]{(p1)}{(p8)}{60mm}<v>
 
-  \CADim[70mm]{(p7)}{(p5)}<(p6)>{$22.5^\circ$}<a>
+  \CADim[75mm]{(p7)}{(p5)}<(p6)>{$22.5^\circ$}<a>
 
   \CADim*{(p11)}{(p12)}{38mm}[DimNode/.style={fill=\ColorBg}]
 
-  \CADim{(C)}{($(C)+(45:45mm)$)}{45mm}<r>[DimNode/.style={fill=\ColorBg}]
+  \coordinate (CR) ato ($(C)+(45:45mm)$);
+  \CADim<($(C)!0.7!(CR)$)>{(C)}{(CR)}{45mm}<r>[DimNode/.style={fill=\ColorBg}]
 
 \end{scope}
 

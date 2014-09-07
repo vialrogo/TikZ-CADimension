@@ -1,0 +1,32 @@
+\documentclass[tikz,margin=5pt,12pt]{standalone}
+\input{../../Code/CADimension}
+\usetikzlibrary{patterns}
+\begin{document}
+\begin{tikzpicture}
+
+%--------------------------  Body  -----------------------------------
+\draw (-1,-1) -- (21,-1) -- (21,21) -- (-1,21) -- cycle;
+
+\draw (5,5) circle (4);
+
+\draw (15,15) circle (4);
+
+%--------------------  Dimension lines  ------------------------------
+
+\begin{scope}[Dimension/.style= {blue, text=blue},
+              DimNode/.style  = {font=\large}]
+
+\CADim{(5,5)}{($(5,5) + (45:4)$)}{4cm}<r>
+
+\CADim*{(5,5)}{($(5,5) + (30:4)$)}{4cm}<r>
+
+\CADim*[-10mm]{(5,5)}{($(5,5) + (120:4)$)}{4cm}<r>
+
+\CADim*<(10,10)>[-10mm]{(15,15)}{($(15,15) + (225:4)$)}{4cm}<r>
+
+\CADim*{(15,15)}{($(15,15) + (-45:4)$)}{4cm}<r>
+
+\end{scope}
+
+\end{tikzpicture}
+\end{document}  
