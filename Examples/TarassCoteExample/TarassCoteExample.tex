@@ -5,36 +5,40 @@
 \begin{document}
 \begin{tikzpicture}
 \small
-\draw[thick,blue,fill=blue!25]
-        (0,1) coordinate (A)
-    --  (3,1) coordinate (B)
-    --  (5,2) coordinate (C)
-    --  (5,4) coordinate (D)
-    --  (3,4) coordinate (E)
-    --  (2.5,3) coordinate (F)
-    --  (2,4) coordinate (G)
-    --  (0,4) coordinate (H)
+\draw[very thick,blue,fill=blue!25]
+        (0,2) coordinate (A)
+    --  (6,2) coordinate (B)
+    --  (10,4) coordinate (C)
+    --  (10,8) coordinate (D)
+    --  (6,8) coordinate (E)
+    --  (5,6) coordinate (F)
+    --  (4,8) coordinate (G)
+    --  (0,8) coordinate (H)
     --cycle ;
 
-\draw[red,fill=red!25] (2.5,3.9) circle (.39) ;
+\draw[thick, red,fill=red!25] (5,7.8) circle (.78) ;
 
-\Cote{(A)}{(B)}{1}
+\begin{scope}[DimNode/.style={font=\large}]
 
-\Cote{(B)}{(C)}{2}
+  \CADim{(A)}{(B)}{1}
 
-\Cote{(B)}{(C)}{2 bis}<h>[Cote node/.append style={fill=blue!25}]
+  \CADim{(B)}{(C)}{2}
 
-\Cote[.3cm]{(C)}{(D)}{3 bis}[Cote node/.append style={rotate=90}]
+  \CADim[15mm]{(B)}{(C)}{2 bis}<h>[DimNode/.append style={fill=blue!25}]
 
-\Cote[.7cm]{(C)}{(D)}{3}
+  \CADim[5mm]{(C)}{(D)}{3 bis}[DimNode/.append style={rotate=90}]
 
-\Cote[1.1cm]{(C)}{(D)}{3 ter}[Cote node/.append style={rotate=90}]
+  \CADim[10mm]{(C)}{(D)}{3}
 
-\Cote[2cm]{(G)}{(E)}{?$^\circ$}<(F)>
+  \CADim[15mm]{(C)}{(D)}{3 ter}[DimNode/.append style={rotate=90}]
 
-\Cote*[1.2cm]{(2.11,3.9)}{(2.89,3.9)}{4}[Cote node/.append style={below=-1pt,fill=blue!25}]
+  \CADim[38mm]{(G)}{(E)}<(F)>{?$^\circ$}<a>
 
-\Cote[-2cm]{(A)}{(2.5,4.29)}{5}<v>
+  \CADim*[22mm]{(4.22,7.8)}{(5.78,7.8)}{4}[DimNode/.append style={fill=blue!25}]
+
+  \CADim[-35mm]{(A)}{(5,8.58)}{5}<v>
+
+\end{scope}
 
 \end{tikzpicture}
 \end{document}  

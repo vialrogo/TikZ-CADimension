@@ -41,9 +41,9 @@
 
 %--------------------  Base figure  ------------------------------
 \tikzset{%
-  fix/.style = {very thick},
+  fix/.style = {ultra thick},
   tmp/.style = {very thin, green},
-  ctr/.style = {loosely dashdotted, blue},
+  ctr/.style = {loosely dashdotted},
   dot/.style = {very thin, red},
 }
 
@@ -98,20 +98,44 @@
 %--------------------  Dimension lines  ------------------------------
 
 \begin{scope}[Dimension/.style= {blue, text=blue},
-              DimNode/.style  = {font=\large}]
+              DimNode/.style  = {font=\Large}]
 
-% \CADim [50mm] {(0,0)}{(C2)}{305};
-% \CADim* [25mm] {(38mm,0)}{(52mm,0)}{14};
+\CADim [50mm] {(0,0)}{(C2)}{305};
 
+\CADim[2mm]{(72mm,\Ra)}{(72mm,-\Ra)}{32};
 
-\CADim [40mm]{(0,3)}{(2,3)}<(1,1)>{25}<a>
-\CADim [50mm]{(0,3)}{(2,3)}<(1,2)>{25}<a>
+\CADim* [25mm] {(38mm,0)}{(52mm,0)}{14};
 
-\CADim* [40mm]{(8,3)}{(8.6,3)}<(8.3,1)>{25}<a>
-\CADim* [120mm]{(8,7)}{(8.6,7)}<(8.3,-4)>{25}<a>
+\CADim[-2mm]{($(C2) + (75:19mm)  + (-15:12mm)$)}{($(C2) + (255:19mm) + (-15:12mm)$)}{38}
 
-\CADim [45mm]{(0,12)}{(0,10)}<(-3,11)>{35}<a>
-\CADim* [50mm]{(4,12)}{(4,10)}<(0,11)>{35}<a>
+\CADim[-70mm]{($(C2) + (130.7:16mm) + (75:34mm)$)}{($(C2) + (199.2:16mm) + (255:34mm)$)}{86}
+
+\CADim {(C2)} {($ (C2) + (135:22mm)$)}{R22}<r>
+
+\coordinate (P1) ato ($ (C2) + (190:50mm)$);
+\CADim <($(C2)!0.76!(P1)$)> {(C2)}{(P1)}{R50}<r>
+
+\coordinate (P2) ato ($(C2) + (130.7:16mm) + (6:32.4mm)$);
+\CADim*[14mm]{(P2)} {($(P2) + (-45:1.6mm)$)} {2X R1.6}<r>
+
+\coordinate (P3) ato ($(C2) + (135.45:\Rb+64mm)$);
+\CADim {(P3)}{($(P3) + (-60:64mm)$);}{R64}<r>
+
+\coordinate (P4) ato ($(C2) + (199.2:16mm) + (217.3:59mm)$);
+\CADim {(P4)}{($(P4) + (60:25mm)$);}{R25}<r>
+
+\coordinate (P5) ato ($ (C2) + (199.2:16mm)$);
+\coordinate (P6) ato ($(P5) + (235:34mm)$);
+\CADim <($(P5)!0.7!(P6)$)> {(P5)}{(P6)}{2X R34}<r>
+
+\CADim[60mm] {($(C2) + (180:3mm)$)} {($(C2) + (165:3mm)$)} <(C2)> {15$^\circ$}<a>
+
+\CADim*<($(45mm,0)+(70:33mm)$)>[-26mm]{(45mm,0)}{($(45mm,0)+(70:13mm)$)}{%
+  \begin{tabular}{c}
+    \textit{Draw approx} \\ 
+    \textit{ellipse} 
+  \end{tabular}
+}<r>
 
 \end{scope}
 
